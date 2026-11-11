@@ -1,0 +1,101 @@
+version: "3.9"
+
+services:
+  postgres-candidate:
+    image: postgres:16-alpine
+    container_name: postgres-candidate
+    environment:
+      POSTGRES_DB: candidate_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5431:5432"
+    volumes:
+      - candidate-data:/var/lib/postgresql/data
+
+  postgres-job:
+    image: postgres:16-alpine
+    container_name: postgres-job
+    environment:
+      POSTGRES_DB: job_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - job-data:/var/lib/postgresql/data
+
+  postgres-application:
+    image: postgres:16-alpine
+    container_name: postgres-application
+    environment:
+      POSTGRES_DB: application_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - application-data:/var/lib/postgresql/data
+
+  postgres-notification:
+    image: postgres:16-alpine
+    container_name: postgres-notification
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - notification-data:/var/lib/postgresql/data
+
+  postgres-common:
+    image: postgres:16-alpine
+    container_name: postgres-common
+    environment:
+      POSTGRES_DB: common_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - common-data:/var/lib/postgresql/data
+
+  mongo-analytics:
+    image: mongo:7
+    container_name: mongo-analytics
+    ports:
+      - "27017:27017"
+    volumes:
+      - analytics-data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8090:8080"
+
+volumes:
+  candidate-data:
+  job-data:
+  application-data:
+  notification-data:
+  common-data:
+  analytics-data:
+  rabbitmq-data:
